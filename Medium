@@ -1,0 +1,45 @@
+HTML:
+<form action="EmployeeServlet" method="get">
+    Enter Employee ID to Search: <input type="text" name="id"><br>
+    <input type="submit" value="Search">
+</form>
+
+SERVLET:
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.sql.*;
+
+public class EmployeeServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        String id = request.getParameter("id");
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testdb", "root", "");
+
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+
+            if(id != null && !id.isEmpty()) {
+                rs = stmt.executeQuery("SELECT * FROM employee WHERE id=" + id);
+            } else {
+                rs = stmt.executeQuery("SELECT * FROM employee");
+            }
+
+            out.println("<table border='1'>");
+            out.println("<tr><th>ID</th><th>Name</th><th>Position</th></tr>");
+
+            while(rs.next()) {
+                out.println("<tr><td>" + rs.getInt(1) + "</td><td>" + rs.getString(2) + "</td><td>" + rs.getString(3) + "</td></tr>");
+            }
+            out.println("</table>");
+
+            con.close();
+        } catch(Exception e) {
+            out.println("Error: " + e);
+        }
+    }
+}
