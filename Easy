@@ -1,0 +1,27 @@
+HTML:
+<form action="LoginServlet" method="post">
+    Username: <input type="text" name="username"><br>
+    Password: <input type="password" name="password"><br>
+    <input type="submit" value="Login">
+</form>
+
+SERVLET:
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        String user = request.getParameter("username");
+        String pass = request.getParameter("password");
+
+        if(user.equals("admin") && pass.equals("admin")) {
+            out.println("<h1>Welcome " + user + "</h1>");
+        } else {
+            out.println("<h1>Invalid username or password</h1>");
+        }
+    }
+}
